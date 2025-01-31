@@ -13,7 +13,8 @@ const salaryRanges = [
   { label: "$80k - $120k", value: "80-120" },
   { label: "$120k - $160k", value: "120-160" },
   { label: "$160k+", value: "160+" },
-];
+]
+
 
 interface Job {
     id: string;
@@ -52,13 +53,13 @@ async function fetchJobs(page:number, pageSize:number):Promise<FetchJobsResponse
 
 
 interface ActionableJobsProps {
-    searchParams:{
-    page:string,
+    searchParams:  {
+        [key: string]: string | string[] | undefined
     }
 }
 export default async function ActionableJobs({searchParams}:ActionableJobsProps) {
-    const page = searchParams?.page ?  parseInt(searchParams.page) : 1
-    const pageSize = 6
+  const page = searchParams?.page ?  parseInt(searchParams.page as string) : 1
+  const pageSize = 6
     const {jobs, total, page:currentPage, pageSize:currentPageSize} = await fetchJobs(page, pageSize);
     return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">

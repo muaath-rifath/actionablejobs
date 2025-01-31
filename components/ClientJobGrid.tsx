@@ -37,6 +37,9 @@ interface ClientJobGridProps {
 }
 
 const ClientJobGrid:React.FC<ClientJobGridProps>= ({jobs}) => {
+   const handleApply = (url: string) => {
+        window.open(url, '_blank');
+      };
     return (
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
          { jobs.map((job) => (
@@ -56,7 +59,7 @@ const ClientJobGrid:React.FC<ClientJobGridProps>= ({jobs}) => {
               <Button
                   variant="ghost"
                   className="border-blue-600 bg-blue-600 text-white w-full hover:text-white hover:bg-blue-700"
-                   onClick={() =>  window.open(job.job_url, '_blank')}
+                   onClick={() => handleApply(job.job_url)}
                 >
                   Apply
                 </Button>
@@ -121,7 +124,7 @@ const ClientJobGrid:React.FC<ClientJobGridProps>= ({jobs}) => {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel className="border-gray-300">Close</AlertDialogCancel>
-                      <AlertDialogAction className="bg-blue-600 hover:bg-blue-700"  onClick={() =>  window.open(job.job_url, '_blank')}>
+                      <AlertDialogAction className="bg-blue-600 hover:bg-blue-700"  onClick={() => handleApply(job.job_url)}>
                         Apply Now
                       </AlertDialogAction>
                     </AlertDialogFooter>
