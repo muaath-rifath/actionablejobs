@@ -85,7 +85,7 @@ export default function ActionableJobs() {
                 </Button>
                 <Button
                   variant="outline"
-                  className="border-blue-600 text-blue-600 hover:bg-blue-50 w-full"
+                  className="border-blue-600 text-blue-600 hover:bg-blue-50 hover:text-blue-600 w-full"
                 >
                   View Details
                 </Button>
