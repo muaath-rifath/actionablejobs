@@ -58,7 +58,7 @@ const ClientJobGrid:React.FC<ClientJobGridProps>= ({jobs}) => {
               <CardFooter className="flex space-x-2">
               <Button
                   variant="ghost"
-                  className="border-blue-600 bg-blue-600 text-white w-full hover:text-white hover:bg-blue-700"
+                  className="border-emerald-600 bg-emerald-600 text-white w-full hover:text-white hover:bg-emerald-700"
                    onClick={() => handleApply(job.job_url)}
                 >
                   Apply
@@ -67,7 +67,7 @@ const ClientJobGrid:React.FC<ClientJobGridProps>= ({jobs}) => {
                   <AlertDialogTrigger asChild>
                     <Button
                       variant="outline"
-                      className="border-blue-600 text-blue-600 hover:bg-blue-50 hover:text-blue-600 w-full"
+                      className="border-emerald-600 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-600 w-full"
                     >
                       View Details
                     </Button>
@@ -101,7 +101,7 @@ const ClientJobGrid:React.FC<ClientJobGridProps>= ({jobs}) => {
                           <p className="font-semibold text-gray-700 mb-2">Skills Required</p>
                           <div className="flex flex-wrap gap-2">
                             {Array.isArray(job.skills) && job.skills.map((skill) => (
-                              <span key={skill} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                              <span key={skill} className="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-sm">
                                 {skill}
                               </span>
                             ))}
@@ -124,7 +124,7 @@ const ClientJobGrid:React.FC<ClientJobGridProps>= ({jobs}) => {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel className="border-gray-300">Close</AlertDialogCancel>
-                      <AlertDialogAction className="bg-blue-600 hover:bg-blue-700"  onClick={() => handleApply(job.job_url)}>
+                      <AlertDialogAction className="bg-emerald-600 hover:bg-emerald-700"  onClick={() => handleApply(job.job_url)}>
                         Apply Now
                       </AlertDialogAction>
                     </AlertDialogFooter>

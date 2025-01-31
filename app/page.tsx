@@ -25,7 +25,7 @@ export default async function ActionableJobs() {
     <div className="relative flex-grow">
       <Input
         placeholder="Job title | Location | Company"
-        className="w-full pl-4 bg-white pr-32 py-6 ring-offset-0 focus:ring-1 focus:ring-blue-600 
+        className="w-full pl-4 bg-white pr-32 py-6 ring-offset-0 focus:ring-1 focus:ring-emerald-600 
                    shadow-sm border border-gray-300 rounded-md outline-none focus:outline-none"
       />
       <div className="absolute right-2 top-1/2 -translate-y-1/2">
@@ -45,7 +45,7 @@ export default async function ActionableJobs() {
     </div>
 
     <Button
-      className="shrink-0 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-6 border border-blue-600 
+      className="shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-6 border border-emerald-600 
                  rounded-md transition-all focus:ring-1 ring-offset-0 focus:outline-none shadow-sm"  
     >
       Action
