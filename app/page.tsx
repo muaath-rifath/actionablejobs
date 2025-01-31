@@ -76,7 +76,13 @@ export default function ActionableJobs() {
                 <p className="text-gray-600">San Francisco, CA</p>
                 <p className="text-gray-600 font-semibold">$140,000 - $180,000</p>
               </CardContent>
-              <CardFooter>
+              <CardFooter className="flex space-x-2">
+              <Button
+                  variant="ghost"
+                  className="border-blue-600 bg-blue-600 text-white w-full hover:text-white hover:bg-blue-700"
+                >
+                  Apply
+                </Button>
                 <Button
                   variant="outline"
                   className="border-blue-600 text-blue-600 hover:bg-blue-50 w-full"
