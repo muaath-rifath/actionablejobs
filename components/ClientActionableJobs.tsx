@@ -1,7 +1,7 @@
 // app/page.tsx
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import React from "react"
+import React, { Suspense } from "react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Topbar from "@/components/Topbar"
 import ClientActionableJobs from "@/components/ClientActionableJobs"
@@ -53,7 +53,10 @@ export default async function ActionableJobs() {
     </Button>
   </div>
 </div>
-         <ClientActionableJobs />
+        <Suspense fallback={<p>Loading...</p>}>
+              <ClientActionableJobs />
+        </Suspense>
+
       </main>
     </div>
   )
