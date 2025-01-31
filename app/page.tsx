@@ -226,7 +226,7 @@ export default function ActionableJobs() {
                       <AlertDialogTitle className="text-xl font-bold">
                         {job.title}
                       </AlertDialogTitle>
-                      <AlertDialogDescription className="space-y-4">
+                      <AlertDialogDescription className="space-y-4 overflow-y-auto max-h-[400px]">
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <p className="font-semibold text-gray-700">Company</p>
@@ -256,12 +256,14 @@ export default function ActionableJobs() {
                             ))}
                           </div>
                         </div>
-                         <div>
+                        
+                        <div className="relative">
                             <p className="font-semibold text-gray-700 mb-2">Description</p>
-                            <div className="text-gray-600">
-                              {job.description || "No description available"}
+                            <div className="text-gray-600 ">
+                             <DescriptionSection description={job.description} />
                             </div>
-                          </div>
+                        </div>
+                        
                         
                         <div className="text-sm text-gray-500">
                           <p>Posted: {job.date_posted}</p>
@@ -308,3 +310,37 @@ export default function ActionableJobs() {
     </div>
   )
 }
+
+interface DescriptionSectionProps {
+    description: string;
+}
+
+const DescriptionSection: React.FC<DescriptionSectionProps> = ({ description }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const maxLength = 200;
+    if (!description) {
+        return <p>No description available</p>;
+    }
+
+    if (description.length <= maxLength) {
+        return <p>{description}</p>;
+    }
+
+    const shortDescription = isExpanded ? description : `${description.substring(0, maxLength)}...`;
+
+    return (
+        <div>
+            <p >{shortDescription}</p>
+            {!isExpanded && (
+            <Button variant="link" onClick={() => setIsExpanded(true)} className="p-0">
+               Read More
+             </Button>
+           )}
+             {isExpanded && (
+                 <Button variant="link" onClick={() => setIsExpanded(false)} className="p-0">
+                     Read Less
+                  </Button>
+               )}
+        </div>
+    );
+};
