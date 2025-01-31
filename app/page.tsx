@@ -11,7 +11,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
-import Topbar from "@/components/components/Topbar"
+import Topbar from "@/components/Topbar"
 
 export default function ActionableJobs() {
   return (
