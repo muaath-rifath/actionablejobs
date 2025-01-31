@@ -261,12 +261,12 @@ export default function ActionableJobs() {
                           </div>
                         </div>
                         
-                        <div>
-                          <p className="font-semibold text-gray-700 mb-2">Description</p>
-                          <p className="text-gray-600">
-                            {job.description || "No description available"}
-                          </p>
-                        </div>
+                         <div>
+                            <p className="font-semibold text-gray-700 mb-2">Description</p>
+                            <div className="text-gray-600">
+                              {job.description || "No description available"}
+                            </div>
+                          </div>
                         
                         <div className="text-sm text-gray-500">
                           <p>Posted: {job.date_posted}</p>
