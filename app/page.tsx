@@ -11,35 +11,12 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
+import Topbar from "@/components/components/Topbar"
 
 export default function ActionableJobs() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">
-      <header className="bg-white shadow-md">
-        <div className="container mx-auto px-4 py-6 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-blue-600">Actionable Jobs</h1>
-          <nav>
-            <ul className="flex space-x-4">
-              <li>
-                <a href="#" className="text-gray-600 hover:text-blue-600">
-                  Home
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-600 hover:text-blue-600">
-                  About
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-600 hover:text-blue-600">
-                  Contact
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </header>
-
+      <Topbar />
       <main className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
