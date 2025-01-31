@@ -332,12 +332,12 @@ const DescriptionSection: React.FC<DescriptionSectionProps> = ({ description }) 
         <div>
             <p >{shortDescription}</p>
             {!isExpanded && (
-            <Button variant="link" onClick={() => setIsExpanded(true)} className="p-0">
+            <Button variant="link" onClick={() => setIsExpanded(true)} className="p-0 text-blue-600">
                Read More
              </Button>
            )}
              {isExpanded && (
-                 <Button variant="link" onClick={() => setIsExpanded(false)} className="p-0">
+                 <Button variant="link" onClick={() => setIsExpanded(false)} className="p-0 text-blue-600">
                      Read Less
                   </Button>
                )}
