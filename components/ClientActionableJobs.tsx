@@ -1,63 +1,95 @@
-// app/page.tsx
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import React, { Suspense } from "react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import Topbar from "@/components/Topbar"
-import ClientActionableJobs from "@/components/ClientActionableJobs"
-
-
-const salaryRanges = [
-  { label: "$30k - $50k", value: "30-50" },
-  { label: "$50k - $80k", value: "50-80" },
-  { label: "$80k - $120k", value: "80-120" },
-  { label: "$120k - $160k", value: "120-160" },
-  { label: "$160k+", value: "160+" },
-]
-
-export default async function ActionableJobs() {
-
-    return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
-      <Topbar />
-      <main className="container mx-auto px-4 py-8">
-      <div className="rounded-lg p-6 mb-8 mt-12">
-  <div className="relative flex flex-col md:flex-row items-center gap-3 max-w-[1000px] mx-auto">
-    <div className="relative flex-grow">
-      <Input
-        placeholder="Job title | Location | Company"
-        className="w-full pl-4 bg-white pr-32 py-6 ring-offset-0 focus:ring-1 focus:ring-blue-600 
-                   shadow-sm border border-gray-300 rounded-md outline-none focus:outline-none"
-      />
-      <div className="absolute right-2 top-1/2 -translate-y-1/2">
-        <Select>
-          <SelectTrigger className="border-0 shadow-none hover:bg-gray-50 ring-0 focus:ring-0">
-            <SelectValue placeholder="Salary" />
-          </SelectTrigger>
-          <SelectContent>
-            {salaryRanges.map((range) => (
-              <SelectItem key={range.value} value={range.value}>
-                {range.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-    </div>
-
-    <Button
-      className="shrink-0 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-6 border border-blue-600 
-                 rounded-md transition-all focus:ring-1 ring-offset-0 focus:outline-none shadow-sm"  
-    >
-      Action
-    </Button>
-  </div>
-</div>
-        <Suspense fallback={<p>Loading...</p>}>
-              <ClientActionableJobs />
-        </Suspense>
-
-      </main>
-    </div>
-  )
+// src/components/ClientActionableJobs.tsx
+"use client"
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from 'next/navigation';
+import ClientPagination from "./ClientPagination";
+import ClientJobGrid from "./ClientJobGrid";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+interface Job {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  salary: string;
+  description: string;
+  job_url: string;
+  source: string;
+  date_posted: string;
+  date_scraped: string;
+  external_id: string;
+  extracted_salary: string;
+  skills: string;
+  job_type: string;
 }
+
+interface FetchJobsResponse {
+    jobs: Job[];
+    total: number;
+    timestamp: string;
+      page: number;
+      pageSize: number;
+  }
+const fetchJobs = async (page:number, pageSize:number):Promise<FetchJobsResponse> => {
+    try {
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+        const response = await fetch(`${baseUrl}/api/jobs?page=${page}&pageSize=${pageSize}`);
+        return await response.json()
+      } catch (error) {
+        console.error('Error fetching jobs:', error);
+         return { jobs:[], total:0, timestamp:"", page:0, pageSize:0}
+    }
+}
+
+const ClientActionableJobs = () => {
+  const searchParams = useSearchParams();
+      const page = searchParams?.get('page') ?  parseInt(searchParams.get('page') as string) : 1
+    const pageSize = 6
+    const [jobs, setJobs] = useState<Job[]>([])
+       const [total, setTotal] = useState<number>(0)
+        const [currentPage, setCurrentPage] = useState<number>(1);
+    const [pageSizeState, setPageSizeState] = useState<number>(6);
+        const [loading, setLoading] = useState<boolean>(true)
+        useEffect(()=> {
+           setLoading(true)
+            const fetchData = async () => {
+                 const {jobs, total, page:currentPage, pageSize:currentPageSize} = await fetchJobs(page, pageSize);
+                 setJobs(jobs)
+                 setTotal(total)
+                setCurrentPage(currentPage)
+                 setPageSizeState(currentPageSize)
+                 setLoading(false)
+            }
+            fetchData()
+        }, [page, pageSize])
+    return (
+       <>
+           {loading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    {Array.from({ length: 6 }, (_, index) => (
+                          <Card key={index} className="hover:shadow-lg transition-shadow duration-300 border border-gray-200">
+                          <CardHeader>
+                            <CardTitle className="text-gray-800">Loading...</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-2">
+                                <div className="flex items-center">
+                                  <span className="inline-block w-2 h-2 rounded-full bg-gray-600 mr-2 animate-pulse"></span>
+                                  <p className="font-medium text-gray-600 animate-pulse">Loading...</p>
+                                </div>
+                                <p className="text-gray-600 animate-pulse">Loading...</p>
+                                  <p className="text-gray-600 font-semibold animate-pulse">Loading...</p>
+                              </CardContent>
+                            </Card>
+                        ))
+                   }
+             </div>
+          ) : (
+            <>
+              <ClientJobGrid jobs={jobs}/>
+              <ClientPagination  total={total} currentPage={currentPage} pageSize={pageSizeState} />
+            </>
+         )}
+        </>
+    )
+}
+
+export default ClientActionableJobs;
