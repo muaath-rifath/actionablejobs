@@ -40,16 +40,18 @@ const fetchJobs = async (page:number, pageSize:number):Promise<FetchJobsResponse
     }
 }
 
+
 const ClientActionableJobs = () => {
   const searchParams = useSearchParams();
       const page = searchParams?.get('page') ?  parseInt(searchParams.get('page') as string) : 1
     const pageSize = 6
-    const [jobs, setJobs] = useState<Job[]>([])
+        const [jobs, setJobs] = useState<Job[]>([])
        const [total, setTotal] = useState<number>(0)
         const [currentPage, setCurrentPage] = useState<number>(1);
     const [pageSizeState, setPageSizeState] = useState<number>(6);
         const [loading, setLoading] = useState<boolean>(true)
-        useEffect(()=> {
+    
+     useEffect(()=> {
            setLoading(true)
             const fetchData = async () => {
                  const {jobs, total, page:currentPage, pageSize:currentPageSize} = await fetchJobs(page, pageSize);
@@ -57,38 +59,39 @@ const ClientActionableJobs = () => {
                  setTotal(total)
                 setCurrentPage(currentPage)
                  setPageSizeState(currentPageSize)
-                 setLoading(false)
+               setLoading(false)
             }
             fetchData()
         }, [page, pageSize])
+
     return (
-       <>
-           {loading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    {Array.from({ length: 6 }, (_, index) => (
-                          <Card key={index} className="hover:shadow-lg transition-shadow duration-300 border border-gray-200">
-                          <CardHeader>
-                            <CardTitle className="text-gray-800">Loading...</CardTitle>
-                          </CardHeader>
-                          <CardContent className="space-y-2">
-                                <div className="flex items-center">
-                                  <span className="inline-block w-2 h-2 rounded-full bg-gray-600 mr-2 animate-pulse"></span>
-                                  <p className="font-medium text-gray-600 animate-pulse">Loading...</p>
-                                </div>
-                                <p className="text-gray-600 animate-pulse">Loading...</p>
-                                  <p className="text-gray-600 font-semibold animate-pulse">Loading...</p>
-                              </CardContent>
-                            </Card>
-                        ))
-                   }
-             </div>
-          ) : (
-            <>
+      <>
+         {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                  {Array.from({ length: 6 }, (_, index) => (
+                        <Card key={index} className="hover:shadow-lg transition-shadow duration-300 border border-gray-200">
+                        <CardHeader>
+                          <CardTitle className="text-gray-800">Loading...</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                              <div className="flex items-center">
+                                <span className="inline-block w-2 h-2 rounded-full bg-gray-600 mr-2 animate-pulse"></span>
+                                <p className="font-medium text-gray-600 animate-pulse">Loading...</p>
+                              </div>
+                              <p className="text-gray-600 animate-pulse">Loading...</p>
+                                <p className="text-gray-600 font-semibold animate-pulse">Loading...</p>
+                            </CardContent>
+                          </Card>
+                      ))
+                 }
+           </div>
+        ) : (
+         <>
               <ClientJobGrid jobs={jobs}/>
               <ClientPagination  total={total} currentPage={currentPage} pageSize={pageSizeState} />
-            </>
-         )}
-        </>
+         </>
+        )}
+      </>
     )
 }
 
