@@ -6,7 +6,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import Topbar from "@/components/Topbar"
 import ClientActionableJobs from "@/components/ClientActionableJobs"
 
-
 const salaryRanges = [
   { label: "$30k - $50k", value: "30-50" },
   { label: "$50k - $80k", value: "50-80" },
