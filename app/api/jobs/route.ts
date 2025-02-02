@@ -2,7 +2,6 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
-import Papa from 'papaparse';
 
 interface Job {
     id: string;
@@ -22,22 +21,20 @@ interface Job {
 }
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const page = parseInt(searchParams.get('page') || '1', 10);
-  const pageSize = parseInt(searchParams.get('pageSize') || '6', 10);
-    try {
-    const filePath = path.join(process.cwd(), 'public', 'jobs_preprocessed_improved.csv');
-        await fs.access(filePath);
-        const fileContent = await fs.readFile(filePath, 'utf-8');
-        const { data } = Papa.parse<Job>(fileContent, {
-          header: true,
-          skipEmptyLines: true,
-          transformHeader: (header) => header.trim(),
-        });
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const pageSize = parseInt(searchParams.get('pageSize') || '6', 10);
 
-    const startIndex = (page - 1) * pageSize;
+    try {
+        const filePath = path.join(process.cwd(), 'public', 'output.json');
+
+        // Read and parse the JSON file
+        const fileContent = await fs.readFile(filePath, 'utf-8');
+        const data: Job[] = JSON.parse(fileContent);
+
+        const startIndex = (page - 1) * pageSize;
         const endIndex = startIndex + pageSize;
-      const paginatedJobs = data.slice(startIndex, endIndex);
+        const paginatedJobs = data.slice(startIndex, endIndex);
 
         return NextResponse.json({
             jobs: paginatedJobs,
@@ -47,10 +44,10 @@ export async function GET(request: Request) {
             pageSize
         });
     } catch (error) {
-      console.error("Error loading jobs data:", error);
-      return NextResponse.json(
-        { error: 'Failed to load jobs data' },
-        { status: 500 }
-      );
+        console.error("Error loading jobs data:", error);
+        return NextResponse.json(
+            { error: 'Failed to load jobs data' },
+            { status: 500 }
+        );
     }
 }
