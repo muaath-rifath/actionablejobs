@@ -9,8 +9,6 @@ interface SearchWrapperProps {
 }
 
 const SearchWrapper: React.FC<SearchWrapperProps> = ({ message = "Jobs" }) => {
-    console.log("SearchWrapper message prop:", message);
-
     return (
         <Suspense fallback={<div className="text-center">Loading Jobs...</div>}>
             <div className="mb-4">
@@ -20,5 +18,6 @@ const SearchWrapper: React.FC<SearchWrapperProps> = ({ message = "Jobs" }) => {
         </Suspense>
     );
 }
+
 
 export default SearchWrapper;

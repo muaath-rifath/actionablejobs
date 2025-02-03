@@ -4,7 +4,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import Topbar from "@/components/Topbar"
 import SearchWrapper from "@/components/SearchWrapper"
 import ClientSearch from "@/components/ClientSearch"
-import ClientPaginationWrapper from "@/components/ClientPaginationWrapper";
 import ActionButton from "@/components/ActionButton"
 
 const salaryRanges = [
@@ -15,36 +14,8 @@ const salaryRanges = [
   { label: "$160k+", value: "160+" },
 ]
 
-interface FetchJobsResponse {
-    total: number;
-    timestamp: string;
-    page: number;
-    pageSize: number;
-}
+export default async function ActionableJobs() {
 
-const fetchJobs = async (page: number, pageSize: number): Promise<FetchJobsResponse> => {
-    try {
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-        const response = await fetch(`${baseUrl}/api/jobs?page=${page}&pageSize=${pageSize}`);
-        const data = await response.json() as FetchJobsResponse;
-        return data;
-    } catch (error) {
-        console.error('Error fetching jobs:', error);
-        return { total: 0, timestamp: "", page: 0, pageSize: 0 };
-    }
-}
-
-interface ActionableJobsProps {
-    searchParams: Promise<{
-        page?: string;
-    }>;
-}
-
-export default async function ActionableJobs({ searchParams }: ActionableJobsProps) {
-    const resolvedParams = (await searchParams) as { page?: string };
-    const page = resolvedParams?.page ? parseInt(resolvedParams.page) : 1;
-    const pageSize = 6;
-    const { total, page: currentPage } = await fetchJobs(page, pageSize);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
@@ -75,11 +46,7 @@ export default async function ActionableJobs({ searchParams }: ActionableJobsPro
                 <Suspense fallback={<p className="text-center">Loading jobs...</p>}>
                     <SearchWrapper message="Available Jobs" />
                 </Suspense>
-                <ClientPaginationWrapper
-                    total={total}
-                    currentPage={currentPage}
-                    pageSize={pageSize}
-                />
+                
             </main>
         </div>
     );
