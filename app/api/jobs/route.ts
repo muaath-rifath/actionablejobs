@@ -1,4 +1,3 @@
-// app/api/jobs/route.ts
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
@@ -27,8 +26,6 @@ export async function GET(request: Request) {
 
     try {
         const filePath = path.join(process.cwd(), 'public', 'output.json');
-
-        // Read and parse the JSON file
         const fileContent = await fs.readFile(filePath, 'utf-8');
         const data: Job[] = JSON.parse(fileContent);
 
@@ -36,17 +33,13 @@ export async function GET(request: Request) {
         const endIndex = startIndex + pageSize;
         const paginatedJobs = data.slice(startIndex, endIndex);
 
-        return NextResponse.json({
-            jobs: paginatedJobs,
-            total: data.length,
-            timestamp: new Date().toISOString(),
-            page,
-            pageSize
-        });
-    } catch (error) {
-        console.error("Error loading jobs data:", error);
+        return NextResponse.json({ jobs: paginatedJobs });
+    } catch (error) { // Corrected: Implicitly typed error
+        console.error('Error fetching jobs:', error);
         return NextResponse.json(
-            { error: 'Failed to load jobs data' },
+            { 
+                error: error instanceof Error ? error.message : 'Failed to fetch jobs' // Type-safe error message
+            },
             { status: 500 }
         );
     }

@@ -1,10 +1,11 @@
 // src/components/ClientActionableJobs.tsx
 "use client"
 import React, { useEffect, useState, Suspense } from "react";
-import { useSearchParams } from 'next/navigation';
+import { ReadonlyURLSearchParams } from 'next/navigation';
 import ClientPagination from "./ClientPagination";
 import ClientJobGrid from "./ClientJobGrid";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 interface Job {
   id: string;
   title: string;
@@ -40,10 +41,13 @@ const fetchJobs = async (page:number, pageSize:number):Promise<FetchJobsResponse
     }
 }
 
+interface ClientActionableJobsProps {
+    searchParams:  ReadonlyURLSearchParams; // Receive searchParams as props
+}
 
-const ClientActionableJobs = () => {
-  const searchParams = useSearchParams();
-      const page = searchParams?.get('page') ?  parseInt(searchParams.get('page') as string) : 1
+
+const ClientActionableJobs: React.FC<ClientActionableJobsProps> = ({searchParams}) => {
+  const page = searchParams?.get('page') ?  parseInt(searchParams.get('page') as string) : 1
     const pageSize = 6
     const [jobs, setJobs] = useState<Job[]>([])
        const [total, setTotal] = useState<number>(0)
@@ -51,49 +55,48 @@ const ClientActionableJobs = () => {
     const [pageSizeState, setPageSizeState] = useState<number>(6);
     const [loading, setLoading] = useState(true);
 
+    useEffect(()=> {
+      setLoading(true);
+      const fetchData = async () => { // fetchData is declared and used now
+        const {jobs, total, page:currentPage, pageSize:currentPageSize} = await fetchJobs(page, pageSize); // Passing page and pageSize
+        setJobs(jobs);
+        setTotal(total);
+        setCurrentPage(currentPage);
+        setPageSizeState(currentPageSize);
+        setLoading(false);
+      };
+      fetchData(); // fetchData is called here
+    }, [page, pageSize]);
 
-        useEffect(()=> {
-           setLoading(true)
-            const fetchData = async () => {
-                 const {jobs, total, page:currentPage, pageSize:currentPageSize} = await fetchJobs(page, pageSize);
-                 setJobs(jobs)
-                 setTotal(total)
-                setCurrentPage(currentPage)
-                 setPageSizeState(currentPageSize)
-               setLoading(false)
-            }
-            fetchData()
-        }, [page, pageSize])
 
     return (
-       <Suspense fallback={<div className="text-center">Loading...</div>}>
-         {loading ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                      {Array.from({ length: 6 }, (_, index) => (
-                            <Card key={index} className="hover:shadow-lg transition-shadow duration-300 border border-gray-200">
+        <Suspense fallback={<div className="text-center">Loading Jobs...</div>}>
+            {loading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    {Array.from({ length: 6 }, (_, index) => (
+                        <Card key={index} className="hover:shadow-lg transition-shadow duration-300 border border-gray-200">
                             <CardHeader>
-                              <CardTitle className="text-gray-800">Loading...</CardTitle>
+                                <CardTitle className="text-gray-800">Loading...</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-2">
-                                  <div className="flex items-center">
+                                <div className="flex items-center">
                                     <span className="inline-block w-2 h-2 rounded-full bg-gray-600 mr-2 animate-pulse"></span>
                                     <p className="font-medium text-gray-600 animate-pulse">Loading...</p>
-                                  </div>
-                                  <p className="text-gray-600 animate-pulse">Loading...</p>
-                                    <p className="text-gray-600 font-semibold animate-pulse">Loading...</p>
-                                </CardContent>
-                              </Card>
-                          ))
-                     }
-               </div>
-              ) : (
-                  <>
-                      <ClientJobGrid jobs={jobs}/>
-                      <ClientPagination  total={total} currentPage={currentPage} pageSize={pageSizeState} />
-                  </>
-           )}
+                                </div>
+                                <p className="text-gray-600 animate-pulse">Loading...</p>
+                                <p className="text-gray-600 font-semibold animate-pulse">Loading...</p>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
+            ) : (
+                <>
+                    <ClientJobGrid jobs={jobs}/>
+                    <ClientPagination  total={total} currentPage={currentPage} pageSize={pageSizeState} />
+                </>
+            )}
         </Suspense>
-    )
+    );
 }
 
 export default ClientActionableJobs;
