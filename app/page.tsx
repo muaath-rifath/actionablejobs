@@ -45,7 +45,7 @@ export default function ActionableJobs() {
           </div>
         </div>
         <Suspense fallback={<div className="text-center">Loading jobs...</div>}>
-          <SearchWrapper message="Available Jobs" />
+          <SearchWrapper message="" />
         </Suspense>
       </main>
     </div>
