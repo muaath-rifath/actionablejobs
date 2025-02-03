@@ -51,6 +51,7 @@ const PaginationLink = ({
     className={cn(
       buttonVariants({
         variant: isActive ? "outline" : "ghost",
+        className: isActive ? "bg-emerald-600 text-white hover:bg-emerald-700 hover:text-white" : "bg-transparent",
         size,
       }),
       className

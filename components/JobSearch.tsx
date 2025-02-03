@@ -1,4 +1,3 @@
-// components/JobSearch.tsx
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -18,13 +17,12 @@ export default function JobSearch() {
 
         if (term) {
             params.set('query', term);
-            // Fetch suggestions
             try {
                 const response = await fetch(`/api/suggestions?query=${term}`);
                 const data = await response.json();
                 setSuggestions(data.suggestions);
-            } catch(error){
-              console.error("Error fetching suggestions:", error);
+            } catch(error) {
+                console.error("Error fetching suggestions:", error);
             }
         } else {
             params.delete('query');
@@ -40,7 +38,7 @@ export default function JobSearch() {
                 type="text"
                 placeholder="Job title | Location | Company"
                 onChange={(e) => handleSearch(e.target.value)}
-                defaultValue={searchParams.get('query')?.toString()|| ""}
+                defaultValue={searchParams.get('query')?.toString() || ""}
                 className="w-full pl-4 bg-white pr-32 py-6 ring-offset-0 focus:ring-1 focus:ring-emerald-600
                            shadow-sm border border-gray-300 rounded-md outline-none focus:outline-none"
             />

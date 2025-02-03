@@ -1,5 +1,5 @@
-// src/components/ClientSearch.tsx
 'use client';
+
 import { Suspense } from 'react'
 import JobSearch from './JobSearch';
 
