@@ -47,6 +47,7 @@ interface ClientActionableJobsProps {
 
 
 const ClientActionableJobs: React.FC<ClientActionableJobsProps> = ({searchParams}) => {
+  const query = searchParams?.get('query') || ''; // Get query from searchParams
   const page = searchParams?.get('page') ?  parseInt(searchParams.get('page') as string) : 1
     const pageSize = 6
     const [jobs, setJobs] = useState<Job[]>([])
@@ -57,16 +58,27 @@ const ClientActionableJobs: React.FC<ClientActionableJobsProps> = ({searchParams
 
     useEffect(()=> {
       setLoading(true);
-      const fetchData = async () => { // fetchData is declared and used now
-        const {jobs, total, page:currentPage, pageSize:currentPageSize} = await fetchJobs(page, pageSize); // Passing page and pageSize
-        setJobs(jobs);
-        setTotal(total);
-        setCurrentPage(currentPage);
-        setPageSizeState(currentPageSize);
+      const fetchData = async () => {
+        let data;
+        if (query) {
+          console.log(`Fetching search results for query: "${query}", page: ${page}, pageSize: ${pageSize}`); // Log search fetch
+          const searchBaseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+          const searchResponse = await fetch(`${searchBaseUrl}/api/search?query=${query}&page=${page}&pageSize=${pageSize}`);
+          data = await searchResponse.json() as FetchJobsResponse;
+        } else {
+          console.log(`Fetching all jobs for page: ${page}, pageSize: ${pageSize}`); // Log jobs fetch
+          data = await fetchJobs(page, pageSize);
+        }
+
+        console.log("Fetched data:", data); // Log fetched data
+        setJobs(data.jobs);
+        setTotal(data.total);
+        setCurrentPage(data.page);
+        setPageSizeState(data.pageSize);
         setLoading(false);
       };
-      fetchData(); // fetchData is called here
-    }, [page, pageSize]);
+      fetchData();
+    }, [page, pageSize, query]); // Added query to dependency array
 
 
     return (

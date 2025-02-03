@@ -42,6 +42,8 @@ export async function GET(request: Request) {
     const page = parseInt(searchParams.get('page') || '1', 10);
     const pageSize = parseInt(searchParams.get('pageSize') || '6', 10);
 
+    console.log(`Search API called with query: "${query}", page: ${page}, pageSize: ${pageSize}`); // Log parameters
+
     try {
         if (!isIndexInitialized) {
             const filePath = path.join(process.cwd(), 'public', 'output.json');
@@ -49,15 +51,18 @@ export async function GET(request: Request) {
             const data: Job[] = JSON.parse(fileContent);
             data.forEach(job => index.add(job));
             isIndexInitialized = true;
+            console.log("Search index initialized."); // Log index initialization
         }
 
         let filteredJobs = [];
 
         if (query) {
+            console.log(`Searching for query: "${query}"`); // Log before search
             const searchResults = await index.searchAsync(query, {
                 limit: 1000,
                 suggest: true
             });
+            console.log("Search Results:", searchResults); // Log search results
 
             const jobIds = new Set();
             searchResults.forEach(result => {
@@ -71,15 +76,19 @@ export async function GET(request: Request) {
             filteredJobs = Array.from(jobIds).map(id =>
                 data.find(job => job.id === id)
             ).filter(Boolean) as Job[];
+
+            console.log(`Filtered Jobs count after search: ${filteredJobs.length}`); // Log filtered jobs count
         } else {
             const filePath = path.join(process.cwd(), 'public', 'output.json');
             const fileContent = await fs.readFile(filePath, 'utf-8');
             filteredJobs = JSON.parse(fileContent);
+            console.log(`No query, loading all jobs. Total jobs: ${filteredJobs.length}`); // Log all jobs count
         }
 
         const startIndex = (page - 1) * pageSize;
         const endIndex = startIndex + pageSize;
         const paginatedJobs = filteredJobs.slice(startIndex, endIndex);
+        console.log(`Paginated Jobs (page ${page}, pageSize ${pageSize}): ${paginatedJobs.length} jobs`); // Log paginated jobs
 
         return NextResponse.json({
             jobs: paginatedJobs,

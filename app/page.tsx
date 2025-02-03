@@ -1,11 +1,12 @@
 // app/page.tsx
-import { Button } from "@/components/ui/button"
-import React, { Suspense } from "react"
+// ... other imports
+import ActionButton from "@/components/ActionButton"; // Import ActionButton
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Topbar from "@/components/Topbar"
 import SearchWrapper from "@/components/SearchWrapper"
 import ClientSearch from "@/components/ClientSearch"
 import ClientPaginationWrapper from "@/components/ClientPaginationWrapper";
+import { Suspense } from "react";
 
 const salaryRanges = [
   { label: "$30k - $50k", value: "30-50" },
@@ -70,13 +71,8 @@ export default async function ActionableJobs({ searchParams }: ActionableJobsPro
                                 </Select>
                             </div>
                         </div>
-                        <Button
-                            className="shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-6 border border-emerald-600 
-                 rounded-md transition-all focus:ring-1 ring-offset-0 focus:outline-none shadow-sm"
-                            onClick={() => window.location.href = "/?page=1"}
-                        >
-                            Action
-                        </Button>
+                        {/* Replace this Button with ActionButton component */}
+                        <ActionButton />
                     </div>
                 </div>
                 <Suspense fallback={<p className="text-center">Loading jobs...</p>}>

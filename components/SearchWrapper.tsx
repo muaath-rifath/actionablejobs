@@ -1,7 +1,6 @@
 // src/components/SearchWrapper.tsx
 "use client";
 
-import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ClientActionableJobs from './ClientActionableJobs';
 
@@ -10,8 +9,9 @@ export default function SearchWrapper() { // Updated: Removed props from functio
     const searchParams = useSearchParams();
 
     return (
-        <Suspense fallback={<div className="text-center">Loading Jobs...</div>}>
+        // Suspense fallback is removed
+        // <Suspense fallback={<div className="text-center">Loading Jobs...</div>}>
             <ClientActionableJobs searchParams={searchParams} />
-        </Suspense>
+        // </Suspense>
     );
 }
