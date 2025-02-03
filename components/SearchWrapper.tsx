@@ -5,15 +5,18 @@ import { Suspense } from 'react';
 import ClientActionableJobs from './ClientActionableJobs';
 
 interface SearchWrapperProps {
-    message: string; // Simple string prop for testing
+    message?: string; // Made optional with ?
 }
 
-const SearchWrapper: React.FC<SearchWrapperProps> = ({ message }) => { // Expect message prop
-    console.log("SearchWrapper message prop:", message); // Log the message
+const SearchWrapper: React.FC<SearchWrapperProps> = ({ message = "Jobs" }) => {
+    console.log("SearchWrapper message prop:", message);
 
     return (
         <Suspense fallback={<div className="text-center">Loading Jobs...</div>}>
-            <div>{message} <ClientActionableJobs  /></div> {/* Render message and ClientActionableJobs (without props for now) */}
+            <div className="mb-4">
+                <h2 className="text-xl font-semibold">{message}</h2>
+                <ClientActionableJobs />
+            </div>
         </Suspense>
     );
 }
