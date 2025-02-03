@@ -52,20 +52,22 @@ export async function GET(request: Request) {
         });
 
         const suggestions = results
-            .flatMap(result => 
+            .flatMap(result =>
                 (result as unknown as FlexSearch.EnrichedDocumentSearchResultSetUnit<Job>).result
                     .flatMap(item => item.doc?.title || [])
             )
-            .filter((title, index, self) => 
+            .filter((title, index, self) =>
                 title && self.indexOf(title) === index
             )
             .slice(0, 5);
 
         return NextResponse.json({ suggestions });
     } catch (error) {
-        console.error("Error loading suggestions data:", error);
+        console.error("Error fetching search suggestions:", error);
         return NextResponse.json(
-            { error: 'Failed to get suggestions' },
+            {
+                message: 'Could not retrieve search suggestions.',
+                error: error instanceof Error ? error.message : 'Failed to get suggestions' },
             { status: 500 }
         );
     }

@@ -92,15 +92,17 @@ export async function GET(request: Request) {
 
         return NextResponse.json({
             jobs: paginatedJobs,
-            total: filteredJobs.length,
+            total: filteredJobs.length, // Total count is here!
             timestamp: new Date().toISOString(),
             page,
             pageSize
         });
     } catch (error) {
-        console.error("Error searching jobs:", error);
+        console.error("Error during job search:", error);
         return NextResponse.json(
-            { error: 'Search failed' },
+            {
+                message: 'Job search operation failed.',
+                error: error instanceof Error ? error.message : 'Search failed' },
             { status: 500 }
         );
     }

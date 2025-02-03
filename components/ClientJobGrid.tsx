@@ -1,4 +1,4 @@
-// src/components/ClientJobGrid.tsx
+// components/ClientJobGrid.tsx
 "use client"
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -96,26 +96,26 @@ const ClientJobGrid:React.FC<ClientJobGridProps>= ({jobs}) => {
                                 <p className="text-gray-600">{job.job_type}</p>
                             </div>
                         </div>
-                        
+
                         <div>
                           <p className="font-semibold text-gray-700 mb-2">Skills Required</p>
                           <div className="flex flex-wrap gap-2">
-                            {Array.isArray(job.skills) && job.skills.map((skill) => (
+                            {Array.isArray(job.skills) ? job.skills.map((skill) => (
                               <span key={skill} className="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-sm">
                                 {skill}
                               </span>
-                            ))}
+                            )) : <p className="text-gray-600">Skills not specified.</p>}
                           </div>
                         </div>
-                        
+
                         <div className="relative">
                             <p className="font-semibold text-gray-700 mb-2">Description</p>
                             <div className="text-gray-600 ">
                              <DescriptionSection description={job.description} />
                             </div>
                         </div>
-                        
-                        
+
+
                         <div className="text-sm text-gray-500">
                           <p>Posted: {job.date_posted}</p>
                           <p>Job ID: {job.external_id}</p>
@@ -132,7 +132,7 @@ const ClientJobGrid:React.FC<ClientJobGridProps>= ({jobs}) => {
                 </AlertDialog>
               </CardFooter>
             </Card>
-            
+
             ))}
           </div>
     )

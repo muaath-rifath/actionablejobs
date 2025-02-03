@@ -8,6 +8,7 @@ import {
     PaginationLink,
     PaginationNext,
     PaginationPrevious,
+    PaginationEllipsis,
 } from "@/components/ui/pagination"
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
@@ -51,7 +52,7 @@ const ClientPagination: React.FC<ClientPaginationProps> = ({  total, currentPage
         </PaginationItem>
       );
       if (startPage > 2) {
-        items.push(<PaginationItem key="start-ellipsis"><span>...</span></PaginationItem>);
+        items.push(<PaginationItem key="start-ellipsis"><PaginationEllipsis /></PaginationItem>);
       }
     }
 
@@ -71,7 +72,7 @@ const ClientPagination: React.FC<ClientPaginationProps> = ({  total, currentPage
     // Add last page if not included
     if (endPage < totalPages) {
         if (endPage < totalPages -1 ) {
-            items.push(<PaginationItem key="end-ellipsis"><span>...</span></PaginationItem>);
+            items.push(<PaginationItem key="end-ellipsis"><PaginationEllipsis /></PaginationItem>);
         }
 
       items.push(

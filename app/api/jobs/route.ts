@@ -1,3 +1,4 @@
+// app/api/jobs/route.ts
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
@@ -33,11 +34,15 @@ export async function GET(request: Request) {
         const endIndex = startIndex + pageSize;
         const paginatedJobs = data.slice(startIndex, endIndex);
 
-        return NextResponse.json({ jobs: paginatedJobs });
-    } catch (error) { // Corrected: Implicitly typed error
+        return NextResponse.json({
+            jobs: paginatedJobs,
+            total: data.length // Add total count here!
+        });
+    } catch (error) {
         console.error('Error fetching jobs:', error);
         return NextResponse.json(
-            { 
+            {
+                message: 'Failed to fetch job listings.',
                 error: error instanceof Error ? error.message : 'Failed to fetch jobs' // Type-safe error message
             },
             { status: 500 }
