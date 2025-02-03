@@ -8,7 +8,6 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -77,7 +76,7 @@ const ClientJobGrid:React.FC<ClientJobGridProps>= ({jobs}) => {
                       <AlertDialogTitle className="text-xl font-bold">
                         {job.title}
                       </AlertDialogTitle>
-                      <AlertDialogDescription className="space-y-4 overflow-y-auto max-h-[400px]">
+                      <div className="space-y-4 overflow-y-auto max-h-[400px]">
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <p className="font-semibold text-gray-700">Company</p>
@@ -89,7 +88,7 @@ const ClientJobGrid:React.FC<ClientJobGridProps>= ({jobs}) => {
                           </div>
                           <div>
                             <p className="font-semibold text-gray-700">Salary</p>
-                                <p className="text-gray-600">{job.salary || job.extracted_salary}</p>
+                            <p className="text-gray-600">{job.salary || job.extracted_salary}</p>
                           </div>
                             <div>
                                 <p className="font-semibold text-gray-700">Job Type</p>
@@ -120,7 +119,7 @@ const ClientJobGrid:React.FC<ClientJobGridProps>= ({jobs}) => {
                           <p>Posted: {job.date_posted}</p>
                           <p>Job ID: {job.external_id}</p>
                         </div>
-                      </AlertDialogDescription>
+                      </div>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel className="border-gray-300">Close</AlertDialogCancel>
