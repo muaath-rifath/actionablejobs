@@ -25,7 +25,7 @@ interface Job {
 const index = new FlexSearch.Document({
     document: {
         id: "id",
-        index: ["title", "company", "location", "description", "skills", "job_type"],
+        index: ["title", "company", "location", "job_type"],
         store: true
     },
     tokenize: "forward",
