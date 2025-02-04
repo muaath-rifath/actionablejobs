@@ -3,7 +3,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import Topbar from "@/components/Topbar"
 import SearchWrapper from "@/components/SearchWrapper"
 import ClientSearch from "@/components/ClientSearch"
-import ActionButton from "@/components/ActionButton"
 
 const salaryRanges = [
   { label: "$30k - $50k", value: "30-50" },
@@ -39,9 +38,6 @@ export default function ActionableJobs() {
                 </Select>
               </div>
             </div>
-            <Suspense>
-              <ActionButton />
-            </Suspense>
           </div>
         </div>
         <Suspense fallback={<div className="text-center">Loading jobs...</div>}>
