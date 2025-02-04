@@ -1,14 +1,21 @@
-// components/SearchWrapper.tsx
 "use client";
 
 import { Suspense } from 'react';
 import ClientActionableJobs from './ClientActionableJobs';
+import { useSearchParams } from 'next/navigation';
 
 interface SearchWrapperProps {
-    message?: string; // Made optional with ?
+    message?: string;
 }
 
 const SearchWrapper: React.FC<SearchWrapperProps> = ({ message = "Jobs" }) => {
+    const searchParams = useSearchParams();
+    const showResults = searchParams.get('showResults') === 'true';
+
+    if (!showResults) {
+        return null;
+    }
+
     return (
         <Suspense fallback={<div className="text-center">Loading Jobs...</div>}>
             <div className="mb-4">
@@ -18,6 +25,5 @@ const SearchWrapper: React.FC<SearchWrapperProps> = ({ message = "Jobs" }) => {
         </Suspense>
     );
 }
-
 
 export default SearchWrapper;

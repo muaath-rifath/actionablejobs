@@ -1,4 +1,3 @@
-// components/ClientActionableJobs.tsx
 "use client"
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
@@ -22,23 +21,11 @@ interface Job {
     job_type: string;
 }
 
-interface FetchJobsResponse {
-    jobs: Job[];
-    total: number;
-    timestamp: string;
-    page: number;
-    pageSize: number;
-}
-// Removed ClientActionableJobsProps interface
-// interface ClientActionableJobsProps {
-//     searchParams: ReadonlyURLSearchParams;
-// }
-
-// Updated component to remove props parameter
 const ClientActionableJobs: React.FC = () => {
     const params = useSearchParams();
     const query = params.get('query') || '';
     const page = params.get('page') ? parseInt(params.get('page') as string) : 1;
+    const showResults = params.get('showResults') === 'true';
     const pageSize = 6;
 
     const [jobs, setJobs] = useState<Job[]>([]);
@@ -46,22 +33,22 @@ const ClientActionableJobs: React.FC = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (!showResults) return;
+
         setLoading(true);
         const fetchData = async () => {
             try {
                 let data;
                 if (query) {
-                    const searchBaseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
                     const searchResponse = await fetch(
-                        `${searchBaseUrl}/api/search?query=${query}&page=${page}&pageSize=${pageSize}`
+                        `/api/search?query=${query}&page=${page}&pageSize=${pageSize}`
                     );
                     data = await searchResponse.json();
                 } else {
-                    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
                     const response = await fetch(
-                            `${baseUrl}/api/jobs?page=${page}&pageSize=${pageSize}`
-                        );
-                        data = await response.json() as FetchJobsResponse;
+                        `/api/jobs?page=${page}&pageSize=${pageSize}`
+                    );
+                    data = await response.json();
                 }
                 setJobs(data.jobs);
                 setTotal(data.total);
@@ -72,7 +59,9 @@ const ClientActionableJobs: React.FC = () => {
             }
         };
         fetchData();
-    }, [page, pageSize, query]);
+    }, [page, pageSize, query, showResults]);
+
+    if (!showResults) return null;
 
     return (
         <>
@@ -93,6 +82,5 @@ const ClientActionableJobs: React.FC = () => {
         </>
     );
 }
-
 
 export default ClientActionableJobs;
