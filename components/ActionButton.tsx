@@ -10,13 +10,14 @@ export default function ActionButton() {
     const handleActionClick = () => {
         const currentQuery = searchParams?.get('query') || '';
         const newSearchParams = new URLSearchParams();
+        
         if (currentQuery) {
-            newSearchParams.set('query', currentQuery);
+          newSearchParams.set('query', currentQuery);
+          newSearchParams.set('page', '1');
+          newSearchParams.set('showResults', 'true');
+          router.push(`/?${newSearchParams.toString()}`);
         }
-        newSearchParams.set('page', '1');
-        newSearchParams.set('showResults', 'true'); // Add this line
-        router.push(`/?${newSearchParams.toString()}`);
-    };
+      };
 
     return (
         <Button

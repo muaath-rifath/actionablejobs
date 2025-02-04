@@ -1,74 +1,59 @@
-// app/api/suggestions/route.ts
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
-import FlexSearch from 'flexsearch';
 
 interface Job {
-    id: string;
     title: string;
     company: string;
     location: string;
-    salary: string;
-    description: string;
-    job_url: string;
-    source: string;
-    date_posted: string;
-    date_scraped: string;
-    external_id: string;
-    extracted_salary: string;
-    skills: string;
-    job_type: string;
+    skills?: string;
 }
 
-const index = new FlexSearch.Document({
-    document: {
-        id: "id",
-        index: ["title", "company", "location", "description", "skills", "job_type"],
-        store: ["title"] // Store specific fields instead of boolean
-    },
-    tokenize: "forward",
-    cache: true
-});
-
+const index = new Map<string, Set<string>>();
 let isIndexInitialized = false;
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
-    const query = searchParams.get('query') || '';
+    const query = searchParams.get('query')?.toLowerCase() || '';
+
+    if (!query || query.length < 2) {
+        return NextResponse.json({ suggestions: [] });
+    }
 
     try {
         if (!isIndexInitialized) {
             const filePath = path.join(process.cwd(), 'public', 'output.json');
             const fileContent = await fs.readFile(filePath, 'utf-8');
-            const data: Job[] = JSON.parse(fileContent);
-            data.forEach(job => index.add(job));
+            const data = JSON.parse(fileContent) as Job[];
+            
+            // Build suggestion index
+            data.forEach((job: Job) => {
+                const words = [
+                    job.title,
+                    job.company,
+                    job.location,
+                    ...(job.skills || '').split(',')
+                ].filter(Boolean);
+
+                words.forEach(word => {
+                    const key = word.toLowerCase().trim();
+                    if (!index.has(key)) {
+                        index.set(key, new Set());
+                    }
+                    index.get(key)?.add(word.trim());
+                });
+            });
             isIndexInitialized = true;
         }
 
-        const results = await index.searchAsync(query, {
-            limit: 5,
-            enrich: true
-        });
-
-        const suggestions = results
-            .flatMap(result =>
-                (result as unknown as FlexSearch.EnrichedDocumentSearchResultSetUnit<Job>).result
-                    .flatMap(item => item.doc?.title || [])
-            )
-            .filter((title, index, self) =>
-                title && self.indexOf(title) === index
-            )
+        const suggestions = Array.from(index.keys())
+            .filter(key => key.includes(query))
+            .flatMap(key => Array.from(index.get(key) || []))
             .slice(0, 5);
 
         return NextResponse.json({ suggestions });
     } catch (error) {
         console.error("Error fetching search suggestions:", error);
-        return NextResponse.json(
-            {
-                message: 'Could not retrieve search suggestions.',
-                error: error instanceof Error ? error.message : 'Failed to get suggestions' },
-            { status: 500 }
-        );
+        return NextResponse.json({ suggestions: [] }, { status: 500 });
     }
 }
