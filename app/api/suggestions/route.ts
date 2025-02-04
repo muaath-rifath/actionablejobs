@@ -32,7 +32,6 @@ export async function GET(request: Request) {
                     job.title,
                     job.company,
                     job.location,
-                    ...(job.skills || '').split(',')
                 ].filter(Boolean);
 
                 words.forEach(word => {
