@@ -1,9 +1,19 @@
+// components/JobSearch.tsx
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
+const salaryRanges = [
+  { label: "$30k - $50k", value: "30-50" },
+  { label: "$50k - $80k", value: "50-80" },
+  { label: "$80k - $120k", value: "80-120" },
+  { label: "$120k - $160k", value: "120-160" },
+  { label: "$160k+", value: "160+" },
+];
 
 export default function JobSearch() {
     const searchParams = useSearchParams();
@@ -14,7 +24,6 @@ export default function JobSearch() {
     const [isFocused, setIsFocused] = useState(false);
     const inputRef = useRef<HTMLDivElement>(null);
 
-    // Handle clicks outside of the search component
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
@@ -28,6 +37,24 @@ export default function JobSearch() {
         };
     }, []);
 
+    const updateSearchParams = (term: string, salary?: string) => {
+        const params = new URLSearchParams(searchParams);
+        params.set('page', '1');
+        params.set('showResults', 'true');
+
+        if (term) {
+            params.set('query', term);
+        } else {
+            params.delete('query');
+        }
+
+        if (salary) {
+            params.set('salary', salary);
+        }
+
+        replace(`${pathname}?${params.toString()}`);
+    };
+
     const fetchSuggestions = async (term: string) => {
         try {
             const response = await fetch(`/api/suggestions?query=${term}`);
@@ -36,20 +63,6 @@ export default function JobSearch() {
         } catch(error) {
             console.error("Error fetching suggestions:", error);
         }
-    };
-
-    const handleSearch = () => {
-        const params = new URLSearchParams(searchParams);
-        params.set('page', '1');
-        params.set('showResults', 'true');
-
-        if (searchTerm) {
-            params.set('query', searchTerm);
-        } else {
-            params.delete('query');
-        }
-
-        replace(`${pathname}?${params.toString()}`);
     };
 
     const handleInputChange = (value: string) => {
@@ -61,11 +74,16 @@ export default function JobSearch() {
         setSearchTerm(suggestion);
         setSuggestions([]);
         setIsFocused(false);
+        updateSearchParams(suggestion);
+    };
+
+    const handleSalaryChange = (value: string) => {
+        updateSearchParams(searchTerm, value);
     };
 
     return (
         <div className="relative flex gap-2" ref={inputRef}>
-            <div className="flex-grow">
+            <div className="flex-grow relative">
                 <Input
                     type="text"
                     placeholder="Job title | Location | Company"
@@ -75,6 +93,20 @@ export default function JobSearch() {
                     className="w-full pl-4 bg-white pr-32 py-6 ring-offset-0 focus:ring-1 focus:ring-emerald-600
                            shadow-sm border border-gray-300 rounded-md outline-none focus:outline-none"
                 />
+                <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                    <Select onValueChange={handleSalaryChange}>
+                        <SelectTrigger className="border-0 shadow-none hover:bg-gray-50 ring-0 focus:ring-0">
+                            <SelectValue placeholder="Salary" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {salaryRanges.map((range) => (
+                                <SelectItem key={range.value} value={range.value}>
+                                    {range.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
                 {isFocused && suggestions.length > 0 && (
                     <div className="absolute w-full bg-white border rounded-md mt-1 shadow-lg z-50">
                         {suggestions.map((suggestion, index) => (
@@ -90,12 +122,12 @@ export default function JobSearch() {
                 )}
             </div>
             <Button
-                onClick={handleSearch}
+                onClick={() => updateSearchParams(searchTerm)}
                 className="shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-6 
                           border border-emerald-600 rounded-md transition-all focus:ring-1 ring-offset-0 
                           focus:outline-none shadow-sm"
             >
-                Search Jobs
+                Action
             </Button>
         </div>
     );
