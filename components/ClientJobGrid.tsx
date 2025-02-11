@@ -3,6 +3,7 @@
 import React from "react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import CompanyLogo from './CompanyLogo';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,7 +16,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Building2, MapPin, Calendar } from "lucide-react";
 import { Job } from "@/types/job";
-import Image from "next/image";
 import DescriptionSection from "@/components/DescriptionSection";
 
 interface ClientJobGridProps {
@@ -48,19 +48,12 @@ const ClientJobGrid: React.FC<ClientJobGridProps> = ({jobs}) => {
                    </div>
                  </div>
                </div>
-               {job.company_logo && (
-                 <div className="flex-shrink-0 ml-4">
-                   <div className="relative w-12 h-12">
-                     <Image
-                       src={job.company_logo}
-                       alt={`${job.company} logo`}
-                       fill
-                       className="object-contain rounded"
-                       sizes="48px"
-                     />
-                   </div>
-                 </div>
-               )}
+               <div className="flex-shrink-0 ml-4">
+                 <CompanyLogo 
+                   logoUrl={job.company_logo} 
+                   companyName={job.company} 
+                 />
+               </div>
              </div>
            </CardHeader>
            <CardContent>
