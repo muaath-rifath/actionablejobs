@@ -1,40 +1,39 @@
 // components/DescriptionSection.tsx
 "use client"
 import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
+import ReactMarkdown from 'react-markdown';
 
 interface DescriptionSectionProps {
-  description: string;
+  description: string | null;
+  maxLength?: number;
 }
 
-const DescriptionSection: React.FC<DescriptionSectionProps> = ({ description }) => {
-    const [isExpanded, setIsExpanded] = useState(false);
-    const maxLength = 200;
-    if (!description) {
-        return <p>No description available</p>;
-    }
+const DescriptionSection: React.FC<DescriptionSectionProps> = ({ 
+  description, 
+  maxLength = 300 
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
 
-    if (description.length <= maxLength) {
-        return <p>{description}</p>;
-    }
+  if (!description) {
+    return <p className="text-gray-600">No description available</p>;
+  }
 
-    const shortDescription = isExpanded ? description : `${description.substring(0, maxLength)}...`;
+  const shouldShowReadMore = description.length > maxLength;
+  const displayText = isExpanded ? description : description.slice(0, maxLength);
 
-    return (
-        <div>
-            <p >{shortDescription}</p>
-            {!isExpanded && (
-                <Button variant="link" onClick={() => setIsExpanded(true)} className="p-0 text-emerald-600">
-                    Read More
-                </Button>
-            )}
-            {isExpanded && (
-                <Button variant="link" onClick={() => setIsExpanded(false)} className="p-0 text-emerald-600">
-                    Read Less
-                </Button>
-            )}
-        </div>
-    );
+  return (
+    <div className="prose prose-sm max-w-none">
+      <ReactMarkdown>{displayText}</ReactMarkdown>
+      {shouldShowReadMore && (
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="text-emerald-600 hover:text-emerald-700 font-medium mt-2"
+        >
+          {isExpanded ? 'Read Less' : 'Read More'}
+        </button>
+      )}
+    </div>
+  );
 };
 
 export default DescriptionSection;

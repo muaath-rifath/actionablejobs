@@ -3,23 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from 'next/navigation';
 import ClientPagination from "./ClientPagination";
 import ClientJobGrid from "./ClientJobGrid";
-
-interface Job {
-    id: string;
-    title: string;
-    company: string;
-    location: string;
-    salary: string;
-    description: string;
-    job_url: string;
-    source: string;
-    date_posted: string;
-    date_scraped: string;
-    external_id: string;
-    extracted_salary: string;
-    skills: string;
-    job_type: string;
-}
+import { Job } from "@/types/job"; // Import the Job type from types/job.ts
 
 const ClientActionableJobs: React.FC = () => {
     const params = useSearchParams();
@@ -67,7 +51,13 @@ const ClientActionableJobs: React.FC = () => {
         <>
             {loading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    {/* Loading skeleton */}
+                    {Array(6).fill(0).map((_, i) => (
+                        <div key={i} className="border rounded-lg p-4 space-y-3">
+                            <div className="h-6 bg-gray-200 rounded animate-pulse"></div>
+                            <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse"></div>
+                            <div className="h-4 bg-gray-200 rounded w-1/2 animate-pulse"></div>
+                        </div>
+                    ))}
                 </div>
             ) : (
                 <>
